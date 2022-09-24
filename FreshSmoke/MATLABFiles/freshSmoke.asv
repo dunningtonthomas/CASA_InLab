@@ -29,21 +29,20 @@ end
 
 %Subtracting the ambient scan initial concentration to get the change once
 %smoke is introduced
-% initialConc = sum([smpsData{3,1}]);
-% for i = 1:length(smpsData(1,1:end))
-%     
-%     smpsData{4,i} = sum([smpsData{3,i}]) - initialConc;
-%     
-% end
+initialConc = sum([smpsData{3,1}]);
+for i = 1:length(smpsData(1,1:end))
+    
+    smpsData{4,i} = sum([smpsData{3,i}]) - initialConc;
+    
+end
 
 
 %% Finding where the concentration dips below a certain amount
 
 %Times less than 1000, looks at 1302 and 1303 columns
-totalNumConc = [smpsData{4,:}];
-logVec = totalNumConc < 10000;
-timeNumConc = [smpsData{1,:}];
-timeNumConc = timeNumConc(logVec);
+totalNumConc = smpsData(:,4);
+timeNumConc = [smpsData{1,:}](logVec);
+logVec = totalNumConc < 1000;
 totalNumConcTrunc = totalNumConc(logVec);
 
 
@@ -83,10 +82,6 @@ plot([smpsData{1,:}], [smpsData{4,:}], 'linewidth', 2);
 xlabel('Time');
 ylabel('Total Number Concentration $$\frac{\#}{cm^{3}}$$');
 title('Number Concentration over Time');
-
-%Total number concentration once the value is below 1000
-figure();
-plot(timeNumConc, totalNumConcTrunc);
 
 
 
