@@ -14,9 +14,21 @@ timeData = [smpsData{1,:}];
 %RH data import
 pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\FreshSmoke\DataFiles\RHData';
 
-rhData = importRHDataTSI(pathRH);
+rhTable = importRHDataTSI(pathRH);
+ 
+rhData = [rhTable{:,2}];
+rhTime = [rhTable{:,1}];
+
 
 %% Analysis
+%Truncating RH data so it is within the experiment
+expStart = timeData(1);
+expEnd = timeData(end);
+
+logVec = rhTime >= expStart & rhTime <= expEnd;
+
+rhData = rhData(logVec);
+rhTime = rhTime(logVec);
 
 %Size Distribution Analysis
 sizeBins = [smpsData{2,1}]; %The size bins are the same for each scan
@@ -152,6 +164,15 @@ hold on
 xlabel('Time');
 ylabel('Peak Size Bin $$nm$$');
 title('Maximum Concentration Size Bin Over Time');
+
+
+%Plotting the RH data
+figure();
+plot(rhTime, rhData, 'linewidth', 2, 'color', rgb('light blue'));
+
+xlabel('Time');
+ylabel('RH $$\%$$');
+title('Relative Humidity Over Time');
 
 
 
