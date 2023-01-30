@@ -2,7 +2,6 @@
 clear; close all; clc;
 
 %% Import Data
-
 %SMPS import
 pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\FreshSmoke\DataFiles';
 smpsData = importSMPS(pathSMPS);
