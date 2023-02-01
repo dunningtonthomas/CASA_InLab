@@ -1,6 +1,6 @@
 %% Main script
 %This script reads in wall loss SMPS data to calculate the wall losses
-
+%added comment
 
 %% Clean Up
 clear; close all; clc;
