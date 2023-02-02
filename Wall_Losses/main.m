@@ -21,6 +21,9 @@ exp_start2 = datetime('25-Jan-2023 13:27:00');
 exp_end2 = datetime('25-Jan-2023 16:14:00');
 exp_start3 = datetime('26-Jan-2023 10:16:00');
 exp_end3 = datetime('26-Jan-2023 14:44:00');
+exp_start4 = datetime('26-Jan-2023 10:16:00');
+exp_end4 = datetime('26-Jan-2023 14:44:00');
+
 
 %Logical vectors of each experiment
 exp1Log = [smpsData{1,:}] >= exp_start1 & [smpsData{1,:}] <= exp_end1;
