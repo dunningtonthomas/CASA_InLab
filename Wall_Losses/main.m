@@ -127,10 +127,10 @@ slopes = -1*[coeff1(:,1), coeff2(:,1), coeff3(:,1)]; %Times -1 because the slope
 
 %% Plotting
 figure()
-plot([exp1Data{1,:}], exp1DN(102,:)); 
+plot([exp1Data{1,:}], exp1DN(102,:), 'linestyle', 'none', 'marker','.'); 
 
 figure() 
-plot([exp1Data{1,:}], exp1DNLog(102,:));
+plot([exp1Data{1,:}], exp1DNLog(102,:), 'linestyle', 'none', 'marker','.');
 
 %Plotting the decay slope for each trial over the size bins
 figure();
@@ -139,6 +139,10 @@ hold on
 plot(sizeBins, slopes(:,2));
 plot(sizeBins, slopes(:,3));
 
+
+%% To do
+%Make a cuttoff to get a proper range of the particle loss
+    %Do not include the really big particles which are skewing the results
 
 
 

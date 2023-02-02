@@ -1,6 +1,6 @@
 %% Main script
 %This script reads in wall loss SMPS data to calculate the wall losses
-
+%added comment
 
 %% Clean Up
 clear; close all; clc;
@@ -121,17 +121,27 @@ end
 
 
 %Getting the slopes for each size bin
-slopes
+%Each column represents a trial for a total of 3
+slopes = -1*[coeff1(:,1), coeff2(:,1), coeff3(:,1)]; %Times -1 because the slope is exp(-kt) so we solve for k
 
 
 %% Plotting
 figure()
-plot([exp1Data{1,:}], exp1DN(102,:)); 
+plot([exp1Data{1,:}], exp1DN(102,:), 'linestyle', 'none', 'marker','.'); 
 
 figure() 
-plot([exp1Data{1,:}], exp1DNLog(102,:));
+plot([exp1Data{1,:}], exp1DNLog(102,:), 'linestyle', 'none', 'marker','.');
+
+%Plotting the decay slope for each trial over the size bins
+figure();
+plot(sizeBins, slopes(:,1));
+hold on
+plot(sizeBins, slopes(:,2));
+plot(sizeBins, slopes(:,3));
 
 
+%% To do
+%Make a cuttoff wher
 
 
 
