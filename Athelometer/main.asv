@@ -1,0 +1,32 @@
+%% Clean Up
+clear; close all; clc;
+
+%% Import Data​
+T = readtable('2022_03_22To2022_03_25');
+
+% What type of waves 
+vars = ["UVBCc", "BlueBCc", "GreenBCc", "RedBCc", "IRBCc"];
+data = T{:,vars};
+data = rmmissing(data); %Getting rid of NAN values
+
+%Getting time data
+time = T{:,"Date_TimeLocal"};
+time_dateTime = datetime(time{:,1},'InputFormat','yyyy-MM-dd HH:mm:ss.SSS');
+
+
+meanOfWaveLength = mean(T{:,vars}, 'omitnan');
+meanOfWaveLength = meanOfWaveLength';
+% Wavelengths
+waveLengths = [375,470,528,625,880]';
+plotData = table(waveLengths, meanOfWaveLength);
+
+
+%% Analysis
+
+
+
+%% Plotting
+plot(plotData.waveLengths,plotData.meanOfWaveLength)
+title('WaveLength vs Amount of Black Carbon')
+xlabel('Wavelength (nm)')
+ylabel('Absoprtion')
