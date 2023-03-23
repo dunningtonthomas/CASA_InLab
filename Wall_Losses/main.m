@@ -1,6 +1,6 @@
 %% Main script
 %This script reads in wall loss SMPS data to calculate the wall losses
-
+%added comment
 
 %% Clean Up
 clear; close all; clc;
@@ -21,6 +21,9 @@ exp_start2 = datetime('25-Jan-2023 13:27:00');
 exp_end2 = datetime('25-Jan-2023 16:14:00');
 exp_start3 = datetime('26-Jan-2023 10:16:00');
 exp_end3 = datetime('26-Jan-2023 14:44:00');
+exp_start4 = datetime('26-Jan-2023 10:16:00');
+exp_end4 = datetime('26-Jan-2023 14:44:00');
+
 
 %Logical vectors of each experiment
 exp1Log = [smpsData{1,:}] >= exp_start1 & [smpsData{1,:}] <= exp_end1;
@@ -127,10 +130,10 @@ slopes = -1*[coeff1(:,1), coeff2(:,1), coeff3(:,1)]; %Times -1 because the slope
 
 %% Plotting
 figure()
-plot([exp1Data{1,:}], exp1DN(102,:)); 
+plot([exp1Data{1,:}], exp1DN(102,:), 'linestyle', 'none', 'marker','.'); 
 
 figure() 
-plot([exp1Data{1,:}], exp1DNLog(102,:));
+plot([exp1Data{1,:}], exp1DNLog(102,:), 'linestyle', 'none', 'marker','.');
 
 %Plotting the decay slope for each trial over the size bins
 figure();
@@ -139,6 +142,10 @@ hold on
 plot(sizeBins, slopes(:,2));
 plot(sizeBins, slopes(:,3));
 
+
+%% To do
+%Make a cuttoff to get a proper range of the particle loss
+    %Do not include the really big particles which are skewing the results
 
 
 
