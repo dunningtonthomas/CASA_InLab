@@ -23,6 +23,11 @@ meanOfWaveLength = mean(T{:,vars}, 'omitnan');
 meanOfWaveLength = meanOfWaveLength';
 % Wavelengths
 waveLengths = [375,470,528,625,880]';
+
+%Subtract IRBcc from UVBCc to get brown carbon, normalize with UVBCc
+%This gives you an approximate amount of brown carbon in the sample
+
+
 plotData = table(waveLengths, meanOfWaveLength);
 
 
