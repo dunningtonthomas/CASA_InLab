@@ -9,7 +9,7 @@ T4 = readtable('MA200-0030_20220325-044400_post-processed_55911.csv');
 T5 = readtable('MA200-0030_20220325-044400_post-processed_55911.csv');
 
 % What type of waves 
-vars = ["UVBCcPost", "IRBCcPost"];
+vars = ["UVBCcPost", "BlueBCcPost", "GreenBCcPost", "RedBCcPost", "IRBCcPost"];
 data = T1{:,vars};
 logVec = ~isnan(data);
 dataTrunc = rmmissing(data); %Getting rid of NAN values
@@ -28,6 +28,8 @@ time = time(timeLog);
 %Subtract IRBcc from UVBCc to get brown carbon, normalize with UVBCc
 %This gives you an approximate amount of brown carbon in the sample
 %Use the POST data at the last columns in the data files
+
+%Keep all 5 channels, get black carbon
 
 %% Analysis
 
