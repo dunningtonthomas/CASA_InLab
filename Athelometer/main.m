@@ -2,29 +2,42 @@
 clear; close all; clc;
 
 %% Import Data​
-T = readtable('2022_03_22To2022_03_25');
+T = readtable('MA200-0030_20220329-042400_post-processed_55913');
+%%
+timeonly = T.TimeLocal;
+dateonly = T.DateLocal;
 
+
+
+%%
+logVec = ~isnan(T.IRBCcPost);
+BC = rmmissing(T.IRBCcPost); %Getting rid of NAN values
+time = rmmissing(T.new_datetime);
+%{
 % What type of waves 
-vars = ["UVBCc", "BlueBCc", "GreenBCc", "RedBCc", "IRBCc"];
+vars = ["DateLocal", "TimeLocal", "UVBCcPost", "BlueBCcPost", "GreenBCcPost", "RedBCcPost", "IRBCcPost"];
 data = T{:,vars};
 logVec = ~isnan(data);
 data = rmmissing(data); %Getting rid of NAN values
 
 %Getting time data
-dateOnly = T{:,"DateLocal_yyyy_MM_dd_"};
-timeOnly = T{:,"TimeLocal_hh_mm_ss_"};
+dateOnly = T{:,"DateLocal"};
+timeOnly = T{:,"TimeLocal"};
 dateOnly = datetime(dateOnly, 'InputFormat',"yyyy/MM/dd");
 time = dateOnly + timeOnly;
 
 %Truncate time to match with data without nan values
 time = time(logVec(:,1));
+%}
 
+%{
+%%
 meanOfWaveLength = mean(T{:,vars}, 'omitnan');
 meanOfWaveLength = meanOfWaveLength';
 % Wavelengths
 waveLengths = [375,470,528,625,880]';
 plotData = table(waveLengths, meanOfWaveLength);
-
+%}
 
 %% Analysis
 
