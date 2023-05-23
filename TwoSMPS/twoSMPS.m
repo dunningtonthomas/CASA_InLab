@@ -123,6 +123,11 @@ totalNumConc2 = [smpsData2{4,:}];
 %Plotting the individual size distribution
 figure();
 subplot(1,2,1)
+
+%Plot all of the points
+indMaxNum1 = 0;
+indMaxNum2 = 0;
+
 %Starting the plot from the maximum index + 1
 plot([smpsData1{2,indMaxNum1+1}], [smpsData1{3,indMaxNum1+1}]);
 set(gca, 'xscale', 'log');
