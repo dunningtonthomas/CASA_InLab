@@ -25,7 +25,7 @@ timeData = [smpsData1{1,:}];
 %% Analysis
 %Size Distribution Analysis
 %Scan start index, index where the smoke scans begin
-smokeInd = 6;
+smokeInd = 4;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
@@ -143,7 +143,7 @@ highInd = 87;
 
 %Store uncorrected
 meanConc2Uncorrected = meanConc2;
-smpsData2Uncorrected = smpsData2;
+smpsData2Uncorrected = smpsData2
 
 %Correct the mean
 meanConc2(lowInd:highInd) = meanConc2(lowInd:highInd) .* avgAged(lowInd:highInd);
@@ -156,7 +156,7 @@ for i = 1:length(smpsData2(1,:))
 end
 
 
-%% Size Distribution Plots
+%% Plotting
 %Plotting the individual size distribution
 figure();
 p1 = subplot(1,2,1);
@@ -188,7 +188,7 @@ plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'k');
 
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Dry');
+title('Dry Number Concentration');
 
 
 p2 = subplot(1,2,2);
@@ -217,113 +217,24 @@ plot(binsTrunc, meanConc2(lowInd:highInd), 'linewidth', 3, 'color', 'k');
 
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Wet');
-sgtitle('Size Distribution With Correction')
-
-
-%Find maximum concentration
-maxPlot1 = max([smpsData1{3,smokeInd}]);
-maxPlot2 = max([smpsData2{3,smokeInd}]);
-maxPlot = max([maxPlot1, maxPlot2]);
+title('Wet Number Concentration');
 
 %Set Ylim so the axis are equal
-p1.YLim = [0 maxPlot];
-p2.YLim = [0 maxPlot];
+p1.YLim = [0 4.5e5];
+p2.YLim = [0 4.5e5];
 
-%% Average Plots
-%Plot averages CORRECTED
-%%%%ADD 5% Error bars
+%Plot averages on top of each
 figure();
 plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'r');
 hold on
 plot(binsTrunc, meanConc2(lowInd:highInd), 'linewidth', 3, 'color', 'b');
 
-%5% error region for butanol
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc1(lowInd:highInd))', flip(0.95.*(meanConc1(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-%5% error region for water
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc2(lowInd:highInd))', flip(0.95.*(meanConc2(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Average With Correction');
-legend('Dry', 'Wet');
-
-%Plot averages UNCORRECTED
-figure();
-plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'r');
-hold on
-plot(binsTrunc, meanConc2Uncorrected(lowInd:highInd), 'linewidth', 3, 'color', 'b');
-
-%5% error region for butanol
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc1(lowInd:highInd))', flip(0.95.*(meanConc1(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-%5% error region for water
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc2Uncorrected(lowInd:highInd))', flip(0.95.*(meanConc2Uncorrected(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-xlabel('Size $$(nm)$$');
-ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Average Without Correction');
-legend('Dry', 'Wet');
-
-%% Third Scan Plot
-%Plot the third scan after the smoke was injected
-%Get third scan
-thirdButanol = [smpsData1{3,smokeInd+3}];
-thirdWater = [smpsData2{3,smokeInd+3}];
-thirdWaterUncorrected = [smpsData2Uncorrected{3,smokeInd+3}];
-
-figure();
-plot(binsTrunc, thirdButanol(lowInd:highInd), 'linewidth', 3, 'color', 'r');
-hold on
-plot(binsTrunc, thirdWater(lowInd:highInd), 'linewidth', 3, 'color', 'b');
-
-%5% error region for butanol
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdButanol(lowInd:highInd))', flip(0.95.*(thirdButanol(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-%5% error region for water
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdWater(lowInd:highInd))', flip(0.95.*(thirdWater(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-xlabel('Size $$(nm)$$');
-ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Third Scan With Correction');
-legend('Dry', 'Wet');
-
-%Plot averages UNCORRECTED
-figure();
-plot(binsTrunc, thirdButanol(lowInd:highInd), 'linewidth', 3, 'color', 'r');
-hold on
-plot(binsTrunc, thirdWaterUncorrected(lowInd:highInd), 'linewidth', 3, 'color', 'b');
-
-%5% error region for butanol
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdButanol(lowInd:highInd))', flip(0.95.*(thirdButanol(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-%5% error region for water
-temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdWaterUncorrected(lowInd:highInd))', flip(0.95.*(thirdWaterUncorrected(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
-set(temp,'facealpha',0.5) %Makes the shading see-though
-temp.LineStyle = 'none'; %Turn off outline
-
-xlabel('Size $$(nm)$$');
-ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Third Scan Without Correction');
-legend('Dry', 'Wet');
+title('Number Concentration Comparison');
 
 
-%% Mass Plots
+
 %%%%%Plotting the individual size distribution MASS
 % figure();
 % subplot(1,2,1)
