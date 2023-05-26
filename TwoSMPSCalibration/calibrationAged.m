@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\Data';
+pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\DataAged';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -13,9 +13,38 @@ smpsDataRaw2 = smpsData2;
 
 timeData = [smpsData1{1,:}];
 
+%Load in RH data
+pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\RH';
+
+rhTable = importRHDataTSI(pathRH);
+ 
+rhData = [rhTable{:,2}];
+rhTime = [rhTable{:,1}];
+
+%Truncating RH data so it is within the experiment
+expStart = timeData(1);
+expEnd = timeData(end);
+
+logVec = rhTime >= expStart & rhTime <= expEnd;
+
+rhData = rhData(logVec);
+rhTime = rhTime(logVec);
+
+%Get RH data at the beginning of the scan, store in the 6th row
+for i = 1:length(timeData)
+    logTemp = timeData(i) == rhTime;
+    if(sum(logTemp) == 0)
+        RHTemp = 0;
+    else
+        RHTemp = rhData(logTemp);
+    end
+    smpsData1{6,i} = RHTemp;
+    smpsData2{6,i} = RHTemp;
+end
+
 %% Truncate Data
 %Used to get only the times when there were no dryers being used
-% dateTrunc = datetime(2023,5,24,12,56,0);
+% dateTrunc = datetime(2023,5,18,15,6,0);
 % 
 % logTemp = timeData >= dateTrunc;
 % smpsData1 = smpsData1(:,logTemp);
@@ -25,7 +54,9 @@ timeData = [smpsData1{1,:}];
 %% Analysis
 %Size Distribution Analysis
 %Scan start index, index where the smoke scans begin
-smokeInd = 6;
+%smokeInd = 29 for Sofie's 05/09
+%smokeInd = 7 for Sofie's 05/12
+smokeInd = 7;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
@@ -126,13 +157,13 @@ maxMassBin2 = bins(indMaxMass2);
 
 %% Concentration Correction
 % Butanol / water
-% concRatios0524 = meanConc1 ./ meanConc2;
+% concRatios0518 = meanConc1 ./ meanConc2;
 % 
 % figure();
-% plot(bins(34:86), concRatios0524(34:86));
+% plot(bins(34:86), concRatios0518(34:86));
 % 
 % fileName = "correctionsAged.mat";
-% save(fileName,'concRatios0524', 'bins','-append');   
+% save(fileName,'concRatios0518', 'bins','-append');   
 
 %% Apply Concentration Correction
 load('finalCorrection.mat');

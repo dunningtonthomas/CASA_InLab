@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\Data';
+pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\DataFresh';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -12,6 +12,35 @@ smpsData2 = importSMPS(pathSMPS);
 smpsDataRaw2 = smpsData2;
 
 timeData = [smpsData1{1,:}];
+
+%Load in RH data
+pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\RH';
+
+rhTable = importRHDataTSI(pathRH);
+ 
+rhData = [rhTable{:,2}];
+rhTime = [rhTable{:,1}];
+
+%Truncating RH data so it is within the experiment
+expStart = timeData(1);
+expEnd = timeData(end);
+
+logVec = rhTime >= expStart & rhTime <= expEnd;
+
+rhData = rhData(logVec);
+rhTime = rhTime(logVec);
+
+%Get RH data at the beginning of the scan, store in the 6th row
+for i = 1:length(timeData)
+    logTemp = timeData(i) == rhTime;
+    if(sum(logTemp) == 0)
+        RHTemp = 0;
+    else
+        RHTemp = rhData(logTemp);
+    end
+    smpsData1{6,i} = RHTemp;
+    smpsData2{6,i} = RHTemp;
+end
 
 %% Truncate Data
 %Used to get only the times when there were no dryers being used
@@ -25,7 +54,7 @@ timeData = [smpsData1{1,:}];
 %% Analysis
 %Size Distribution Analysis
 %Scan start index, index where the smoke scans begin
-smokeInd = 4;
+smokeInd = 7;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
@@ -38,13 +67,11 @@ meanConc2 = mean([smpsData2{3,smokeInd:end}],2);
 [maxConc2, ind2] = max(meanConc2);
 
 %Finding total number concentration, storing in the fourth row
-for i = 1:length(smpsData1(1,:))
-    
+for i = 1:length(smpsData1(1,:)) 
     smpsData1{4,i} = sum([smpsData1{3,i}]);
 end
 
 for i = 1:length(smpsData2(1,:))
-    
     smpsData2{4,i} = sum([smpsData2{3,i}]);
 end
 
@@ -126,24 +153,28 @@ maxMassBin2 = bins(indMaxMass2);
 
 %% Concentration Correction
 % Butanol / water
-% concRatios0524 = meanConc1 ./ meanConc2;
+% concRatios0529 = meanConc1 ./ meanConc2;
 % 
 % figure();
-% plot(bins(34:86), concRatios0524(34:86));
+% plot(bins(34:86), concRatios0529(34:86));
 % 
 % fileName = "correctionsAged.mat";
-% save(fileName,'concRatios0524', 'bins','-append');   
+% save(fileName,'concRatios0529', 'bins','-append');   
 
 %% Apply Concentration Correction
-load('finalCorrection.mat');
 
-%Indices to apply correction factor, also used to truncate data
+% %Store uncorrected
+meanConc2Uncorrected = meanConc2;
+smpsData2Uncorrected = smpsData2;
+
+% %Indices to apply correction factor, also used to truncate data
 lowInd = 21;
 highInd = 87;
 
-%Store uncorrected
-meanConc2Uncorrected = meanConc2;
-smpsData2Uncorrected = smpsData2
+%Load final correction factor
+load('finalCorrection.mat');
+
+
 
 %Correct the mean
 meanConc2(lowInd:highInd) = meanConc2(lowInd:highInd) .* avgAged(lowInd:highInd);
@@ -156,7 +187,7 @@ for i = 1:length(smpsData2(1,:))
 end
 
 
-%% Plotting
+%% Size Distribution Plots
 %Plotting the individual size distribution
 figure();
 p1 = subplot(1,2,1);
@@ -188,7 +219,7 @@ plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'k');
 
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Dry Number Concentration');
+title('Dry');
 
 
 p2 = subplot(1,2,2);
@@ -217,24 +248,113 @@ plot(binsTrunc, meanConc2(lowInd:highInd), 'linewidth', 3, 'color', 'k');
 
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Wet Number Concentration');
+title('Wet');
+sgtitle('Size Distribution With Correction')
+
+
+%Find maximum concentration
+maxPlot1 = max([smpsData1{3,smokeInd}]);
+maxPlot2 = max([smpsData2{3,smokeInd}]);
+maxPlot = max([maxPlot1, maxPlot2]);
 
 %Set Ylim so the axis are equal
-p1.YLim = [0 4.5e5];
-p2.YLim = [0 4.5e5];
+p1.YLim = [0 maxPlot];
+p2.YLim = [0 maxPlot];
 
-%Plot averages on top of each
+%% Average Plots
+%Plot averages CORRECTED
+%%%%ADD 5% Error bars
 figure();
 plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'r');
 hold on
 plot(binsTrunc, meanConc2(lowInd:highInd), 'linewidth', 3, 'color', 'b');
 
+%5% error region for butanol
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc1(lowInd:highInd))', flip(0.95.*(meanConc1(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+%5% error region for water
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc2(lowInd:highInd))', flip(0.95.*(meanConc2(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
 xlabel('Size $$(nm)$$');
 ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
-title('Number Concentration Comparison');
+title('Average With Correction');
+legend('Dry', 'Wet');
+
+%Plot averages UNCORRECTED
+figure();
+plot(binsTrunc, meanConc1(lowInd:highInd), 'linewidth', 3, 'color', 'r');
+hold on
+plot(binsTrunc, meanConc2Uncorrected(lowInd:highInd), 'linewidth', 3, 'color', 'b');
+
+%5% error region for butanol
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc1(lowInd:highInd))', flip(0.95.*(meanConc1(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+%5% error region for water
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(meanConc2Uncorrected(lowInd:highInd))', flip(0.95.*(meanConc2Uncorrected(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+xlabel('Size $$(nm)$$');
+ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
+title('Average Without Correction');
+legend('Dry', 'Wet');
+
+%% Third Scan Plot
+%Plot the third scan after the smoke was injected
+%Get third scan
+thirdButanol = [smpsData1{3,smokeInd+3}];
+thirdWater = [smpsData2{3,smokeInd+3}];
+thirdWaterUncorrected = [smpsData2Uncorrected{3,smokeInd+3}];
+
+figure();
+plot(binsTrunc, thirdButanol(lowInd:highInd), 'linewidth', 3, 'color', 'r');
+hold on
+plot(binsTrunc, thirdWater(lowInd:highInd), 'linewidth', 3, 'color', 'b');
+
+%5% error region for butanol
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdButanol(lowInd:highInd))', flip(0.95.*(thirdButanol(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+%5% error region for water
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdWater(lowInd:highInd))', flip(0.95.*(thirdWater(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+xlabel('Size $$(nm)$$');
+ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
+title('Third Scan With Correction');
+legend('Dry', 'Wet');
+
+%Plot averages UNCORRECTED
+figure();
+plot(binsTrunc, thirdButanol(lowInd:highInd), 'linewidth', 3, 'color', 'r');
+hold on
+plot(binsTrunc, thirdWaterUncorrected(lowInd:highInd), 'linewidth', 3, 'color', 'b');
+
+%5% error region for butanol
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdButanol(lowInd:highInd))', flip(0.95.*(thirdButanol(lowInd:highInd))')], rgb('light pink'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+%5% error region for water
+temp = fill([binsTrunc', flip(binsTrunc')], [1.05.*(thirdWaterUncorrected(lowInd:highInd))', flip(0.95.*(thirdWaterUncorrected(lowInd:highInd))')], rgb('light blue'), 'HandleVisibility', 'off');
+set(temp,'facealpha',0.5) %Makes the shading see-though
+temp.LineStyle = 'none'; %Turn off outline
+
+xlabel('Size $$(nm)$$');
+ylabel('Number Concentration $$\frac{\#}{cm^{3}}$$');
+title('Third Scan Without Correction');
+legend('Dry', 'Wet');
 
 
-
+%% Mass Plots
 %%%%%Plotting the individual size distribution MASS
 % figure();
 % subplot(1,2,1)
