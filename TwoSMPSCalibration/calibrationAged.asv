@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\DataAged';
+pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\DataAged';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -14,7 +14,7 @@ smpsDataRaw2 = smpsData2;
 timeData = [smpsData1{1,:}];
 
 %Load in RH data
-pathRH = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\RH';
+pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\RH';
 
 rhTable = importRHDataTSI(pathRH);
  
