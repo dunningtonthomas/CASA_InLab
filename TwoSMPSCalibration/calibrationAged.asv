@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\DataAged';
+pathSMPS = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\DataAged';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -14,7 +14,7 @@ smpsDataRaw2 = smpsData2;
 timeData = [smpsData1{1,:}];
 
 %Load in RH data
-pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\RH';
+pathRH = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\RH';
 
 rhTable = importRHDataTSI(pathRH);
  
@@ -56,7 +56,7 @@ end
 %Scan start index, index where the smoke scans begin
 %smokeInd = 29 for Sofie's 05/09
 %smokeInd = 7 for Sofie's 05/12
-smokeInd = 7;
+smokeInd = 1;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 

@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\DataFresh';
+pathSMPS = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\DataFresh';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -14,7 +14,7 @@ smpsDataRaw2 = smpsData2;
 timeData = [smpsData1{1,:}];
 
 %Load in RH data
-pathRH = 'C:\Users\Thomas\Documents\MATLAB\GitHub\SPUR\CASA_InLab\CASA_InLab\TwoSMPSCalibration\RH';
+pathRH = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\RH';
 
 rhTable = importRHDataTSI(pathRH);
  
@@ -54,7 +54,7 @@ end
 %% Analysis
 %Size Distribution Analysis
 %Scan start index, index where the smoke scans begin
-smokeInd = 7;
+smokeInd = 1;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
@@ -151,15 +151,16 @@ maxNumBin2 = bins(indMaxNum2);
 maxMassBin1 = bins(indMaxMass1);
 maxMassBin2 = bins(indMaxMass2);
 
-%% Concentration Correction
-% Butanol / water
-% concRatios0529 = meanConc1 ./ meanConc2;
-% 
-% figure();
-% plot(bins(34:86), concRatios0529(34:86));
-% 
-% fileName = "correctionsAged.mat";
-% save(fileName,'concRatios0529', 'bins','-append');   
+% Concentration Correction
+%Butanol / water
+concRatios0608 = meanConc1 ./ meanConc2;
+
+figure();
+plot(bins(1:10), concRatios0608(1:10));
+
+fileName = "correctionsFresh.mat";
+save(fileName,'concRatios0608', 'bins','-append');   
+%%
 
 %% Apply Concentration Correction
 
@@ -411,3 +412,7 @@ legend('Dry', 'Wet');
 % title('Water Mass Concentration');
 % 
 % 
+figure();
+plot(binsTrunc, meanConc2(lowInd:highInd), 'linewidth', 3, 'color', 'b');
+
+%%

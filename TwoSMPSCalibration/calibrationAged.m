@@ -56,7 +56,7 @@ end
 %Scan start index, index where the smoke scans begin
 %smokeInd = 29 for Sofie's 05/09
 %smokeInd = 7 for Sofie's 05/12
-smokeInd = 7;
+smokeInd = 1;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
@@ -157,13 +157,13 @@ maxMassBin2 = bins(indMaxMass2);
 
 %% Concentration Correction
 % Butanol / water
-% concRatios0518 = meanConc1 ./ meanConc2;
+% concRatios0508 = meanConc1 ./ meanConc2;
 % 
 % figure();
-% plot(bins(34:86), concRatios0518(34:86));
+% plot(bins(34:86), concRatios0508(34:86));
 % 
 % fileName = "correctionsAged.mat";
-% save(fileName,'concRatios0518', 'bins','-append');   
+% save(fileName,'concRatios0508', 'bins','-append');   
 
 %% Apply Concentration Correction
 load('finalCorrection.mat');

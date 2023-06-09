@@ -40,7 +40,7 @@ avgplot = plot(bins(lowInd:highInd), avgAged(lowInd:highInd), 'k', 'linewidth', 
 xlabel('Bin (nm)');
 ylabel('Concentration Correction factor (butanol/water)');
 title('SMPS Correction Factor');
-legend([lowRH, medRH, fresh, Freshq, avgplot], 'Low RH Aged', 'Med RH Aged', 'Fresh New', 'Fresh Early', 'Avg','location', 'nw');
+legend([lowRH, medRH, fresh, Freshq, avgplot], 'Low RH Aged', 'Med RH Aged', 'Fresh New', 'Fresh 'Avg','location', 'nw');
 
 %Saving the correction data
 save('finalCorrection.mat', 'avgAged');

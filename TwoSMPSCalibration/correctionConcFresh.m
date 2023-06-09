@@ -6,10 +6,10 @@ lowInd = 21;
 highInd = 87;
 
 %Date from my aged experiments
-load('correctionsAged.mat');
+load('correctionsFresh.mat');
 
 %Calculate the average, std, and +-10%
-allTogether = [concRatios0508, concRatios0506, concRatios0514, concRatios0509, concRatios0512, concRatios0516, concRatios0519, concRatios0522, concRatios0524, concRatios0531, concRatios0602, concRatios0605, concRatios0606];
+allTogether = [concRatios0509, concRatios0512, concRatios0516, concRatios0519, concRatios0522, concRatios0524];
 avgAged = mean(allTogether, 2);
 stdDev = std(allTogether, 0, 2);
 
@@ -20,14 +20,7 @@ plot(bins(lowInd:highInd), concRatios0509(lowInd:highInd), 'r');
 plot(bins(lowInd:highInd), concRatios0512(lowInd:highInd), 'r');
 plot(bins(lowInd:highInd), concRatios0519(lowInd:highInd), 'g');
 plot(bins(lowInd:highInd), concRatios0522(lowInd:highInd), 'g');
-plot(bins(lowInd:highInd), concRatios0602(lowInd:highInd), 'b');
-fresh = plot(bins(lowInd:highInd), concRatios0605(lowInd:highInd), 'b');
-plot(bins(lowInd:highInd), concRatios0606(lowInd:highInd), 'b');
-plot(bins(lowInd:highInd), concRatios0531(lowInd:highInd), 'b');
 medRH = plot(bins(lowInd:highInd), concRatios0524(lowInd:highInd), 'g');
-Freshq = plot(bins(lowInd:highInd), concRatios0506(lowInd:highInd), 'm');
-plot(bins(lowInd:highInd), concRatios0508(lowInd:highInd), 'm');
-plot(bins(lowInd:highInd), concRatios0514(lowInd:highInd), 'm');
 avgplot = plot(bins(lowInd:highInd), avgAged(lowInd:highInd), 'k', 'linewidth', 2);
 
 %Error bars and standard deviation
@@ -40,7 +33,7 @@ avgplot = plot(bins(lowInd:highInd), avgAged(lowInd:highInd), 'k', 'linewidth', 
 xlabel('Bin (nm)');
 ylabel('Concentration Correction factor (butanol/water)');
 title('SMPS Correction Factor');
-legend([lowRH, medRH, fresh, Freshq, avgplot], 'Low RH Aged', 'Med RH Aged', 'Fresh New', 'Fresh Early', 'Avg','location', 'nw');
+legend([lowRH, medRH, avgplot], 'Low RH', 'Med RH', 'Avg','location', 'nw');
 
 %Saving the correction data
 save('finalCorrection.mat', 'avgAged');
