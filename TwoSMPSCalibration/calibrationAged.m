@@ -3,7 +3,7 @@ clear; close all; clc;
 
 %% Import Data
 %SMPS Import 1
-pathSMPS = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\DataAged';
+pathSMPS = 'C:\Users\Liora\OneDrive - UCB-O365\Documents\GitHub\CASA_InLab\TwoSMPSCalibration\DataFresh';
 smpsData1 = importSMPS(pathSMPS);
 smpsDataRaw1 = smpsData1;
 
@@ -56,7 +56,7 @@ end
 %Scan start index, index where the smoke scans begin
 %smokeInd = 29 for Sofie's 05/09
 %smokeInd = 7 for Sofie's 05/12
-smokeInd = 1;
+smokeInd = 10;
 sizeBins = [smpsData1{2,1}]; %The size bins are the same for each scan
 
 
